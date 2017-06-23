@@ -5,5 +5,10 @@ Learn from:
 
 https://artofpwn.com/phant0m-killing-windows-event-log.html
 
+and
+
+https://github.com/hlldz/Invoke-Phant0m
+
+
 
 
