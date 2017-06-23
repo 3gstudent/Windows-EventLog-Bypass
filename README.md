@@ -1,5 +1,5 @@
 # Windwos-EventLog-Bypass
-Use subProcessTag Value From TEB to detect the threads
+Use subProcessTag Value From TEB to identify Event Log Threads
 
 Learn from:
 
