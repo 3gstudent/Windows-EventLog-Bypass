@@ -1,7 +1,7 @@
 /*
     TerminateEventLogThread.cpp
     Author：3gstudent@3gstudent
-    Terminate EventLog Thread
+    Use to terminate Event Log thread
 */
 
 #include <windows.h>
