@@ -201,6 +201,13 @@ BOOL ListProcessThreads(DWORD pid)
   
 int _tmain(int argc, _TCHAR* argv[])
 {
+    if(argc !=2)
+	{
+		printf("[!]Please input the ProcessId!\n");
+		printf("[+]You can use powershell to get PID:\n");
+		printf("   Get-WmiObject -Class win32_service -Filter \"name = 'eventlog'\" | select -exp ProcessId\n");
+		return 0;
+	}
     SetPrivilege();
     ListProcessThreads(_ttoi(argv[1]));
     printf("------------------------------\n");
