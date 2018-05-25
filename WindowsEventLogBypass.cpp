@@ -11,38 +11,24 @@
 #include <Strsafe.h>
 #include <tlhelp32.h>  
 
-typedef enum _SC_SERVICE_TAG_QUERY_TYPE
-{
-    ServiceNameFromTagInformation = 1,
-    ServiceNameReferencingModuleInformation,
-    ServiceNameTagMappingInformation,
-} SC_SERVICE_TAG_QUERY_TYPE, *PSC_SERVICE_TAG_QUERY_TYPE;
-typedef struct _SC_SERVICE_TAG_QUERY
-{
-    ULONG   processId;
-    ULONG   serviceTag;
-    ULONG   reserved;
-    PVOID   pBuffer;
-} SC_SERVICE_TAG_QUERY, *PSC_SERVICE_TAG_QUERY;
-typedef struct _CLIENT_ID
-{
-    DWORD       uniqueProcess;
-    DWORD       uniqueThread;
-} CLIENT_ID, *PCLIENT_ID;
-typedef struct _THREAD_BASIC_INFORMATION
-{
-    NTSTATUS    exitStatus;
-    PVOID       pTebBaseAddress;
-    CLIENT_ID   clientId;
-    long        dummy[3];
-} THREAD_BASIC_INFORMATION, *PTHREAD_BASIC_INFORMATION;
-typedef ULONG (WINAPI* FN_I_QueryTagInformation)(PVOID, SC_SERVICE_TAG_QUERY_TYPE, PSC_SERVICE_TAG_QUERY);
-typedef NTSTATUS (WINAPI* FN_NtQueryInformationThread)(HANDLE, THREAD_INFORMATION_CLASS, PVOID, ULONG, PULONG);
-typedef long NTSTATUS;
-
 BOOL GetServiceTagString(DWORD processId, ULONG tag, PWSTR pBuffer, SIZE_T bufferSize)
 {
-    BOOL success = FALSE;
+	typedef enum _SC_SERVICE_TAG_QUERY_TYPE
+	{
+		ServiceNameFromTagInformation = 1,
+		ServiceNameReferencingModuleInformation,
+		ServiceNameTagMappingInformation,
+	} SC_SERVICE_TAG_QUERY_TYPE, *PSC_SERVICE_TAG_QUERY_TYPE;
+	typedef struct _SC_SERVICE_TAG_QUERY
+	{
+		ULONG   processId;
+		ULONG   serviceTag;
+		ULONG   reserved;
+		PVOID   pBuffer;
+	} SC_SERVICE_TAG_QUERY, *PSC_SERVICE_TAG_QUERY;
+	typedef ULONG (WINAPI* FN_I_QueryTagInformation)(PVOID, SC_SERVICE_TAG_QUERY_TYPE, PSC_SERVICE_TAG_QUERY);
+
+	BOOL success = FALSE;
     HMODULE advapi32 = NULL;
     FN_I_QueryTagInformation pfnI_QueryTagInformation = NULL;
     SC_SERVICE_TAG_QUERY tagQuery = {0};
@@ -71,7 +57,29 @@ BOOL GetServiceTagString(DWORD processId, ULONG tag, PWSTR pBuffer, SIZE_T buffe
 
 BOOL GetServiceTag(DWORD processId, DWORD threadId, PULONG pServiceTag)
 {
-    BOOL success = FALSE;
+	typedef long NTSTATUS;
+    typedef struct _CLIENT_ID
+    {
+        DWORD       uniqueProcess;
+        DWORD       uniqueThread;
+
+    } CLIENT_ID, *PCLIENT_ID;
+    typedef struct _THREAD_BASIC_INFORMATION
+    {
+        NTSTATUS    exitStatus;
+        PVOID       pTebBaseAddress;
+        CLIENT_ID   clientId;
+        long        dummy[3];
+
+    } THREAD_BASIC_INFORMATION, *PTHREAD_BASIC_INFORMATION;
+    typedef enum _THREAD_INFORMATION_CLASS
+    {
+        ThreadBasicInformation = 0,
+
+    } THREAD_INFORMATION_CLASS;
+    typedef NTSTATUS (WINAPI* FN_NtQueryInformationThread)(HANDLE, THREAD_INFORMATION_CLASS, PVOID, ULONG, PULONG);
+
+	BOOL success = FALSE;
     NTSTATUS status = 0;
     FN_NtQueryInformationThread pfnNtQueryInformationThread = NULL;
     THREAD_BASIC_INFORMATION threadBasicInfo = {0};
@@ -139,7 +147,29 @@ void TerminateEventlogThread(DWORD tid)
 
 BOOL GetServiceTagName(DWORD tid)
 {
-    HANDLE hThread = OpenThread(THREAD_ALL_ACCESS,FALSE, tid);
+    typedef long NTSTATUS;
+    typedef struct _CLIENT_ID
+    {
+        DWORD       uniqueProcess;
+        DWORD       uniqueThread;
+
+    } CLIENT_ID, *PCLIENT_ID;
+    typedef struct _THREAD_BASIC_INFORMATION
+    {
+        NTSTATUS    exitStatus;
+        PVOID       pTebBaseAddress;
+        CLIENT_ID   clientId;
+        long        dummy[3];
+
+    } THREAD_BASIC_INFORMATION, *PTHREAD_BASIC_INFORMATION;
+    typedef enum _THREAD_INFORMATION_CLASS
+    {
+        ThreadBasicInformation = 0,
+
+    } THREAD_INFORMATION_CLASS;
+    typedef NTSTATUS (WINAPI* FN_NtQueryInformationThread)(HANDLE, THREAD_INFORMATION_CLASS, PVOID, ULONG, PULONG);
+
+	HANDLE hThread = OpenThread(THREAD_ALL_ACCESS,FALSE, tid);
     if (NULL == hThread)
     {
       	printf("OpenThread : %u Error! ErrorCode:%u\n",tid,GetLastError());
