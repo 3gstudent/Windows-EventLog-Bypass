@@ -13,22 +13,22 @@
 
 BOOL GetServiceTagString(DWORD processId, ULONG tag, PWSTR pBuffer, SIZE_T bufferSize)
 {
-	typedef enum _SC_SERVICE_TAG_QUERY_TYPE
-	{
-		ServiceNameFromTagInformation = 1,
-		ServiceNameReferencingModuleInformation,
-		ServiceNameTagMappingInformation,
-	} SC_SERVICE_TAG_QUERY_TYPE, *PSC_SERVICE_TAG_QUERY_TYPE;
-	typedef struct _SC_SERVICE_TAG_QUERY
-	{
-		ULONG   processId;
-		ULONG   serviceTag;
-		ULONG   reserved;
-		PVOID   pBuffer;
-	} SC_SERVICE_TAG_QUERY, *PSC_SERVICE_TAG_QUERY;
-	typedef ULONG (WINAPI* FN_I_QueryTagInformation)(PVOID, SC_SERVICE_TAG_QUERY_TYPE, PSC_SERVICE_TAG_QUERY);
+    typedef enum _SC_SERVICE_TAG_QUERY_TYPE
+    {
+        ServiceNameFromTagInformation = 1,
+        ServiceNameReferencingModuleInformation,
+        ServiceNameTagMappingInformation,
+    } SC_SERVICE_TAG_QUERY_TYPE, *PSC_SERVICE_TAG_QUERY_TYPE;
+    typedef struct _SC_SERVICE_TAG_QUERY
+    {
+        ULONG   processId;
+        ULONG   serviceTag;
+        ULONG   reserved;
+        PVOID   pBuffer;
+    } SC_SERVICE_TAG_QUERY, *PSC_SERVICE_TAG_QUERY;
+    typedef ULONG (WINAPI* FN_I_QueryTagInformation)(PVOID, SC_SERVICE_TAG_QUERY_TYPE, PSC_SERVICE_TAG_QUERY);
 
-	BOOL success = FALSE;
+    BOOL success = FALSE;
     HMODULE advapi32 = NULL;
     FN_I_QueryTagInformation pfnI_QueryTagInformation = NULL;
     SC_SERVICE_TAG_QUERY tagQuery = {0};
@@ -57,7 +57,7 @@ BOOL GetServiceTagString(DWORD processId, ULONG tag, PWSTR pBuffer, SIZE_T buffe
 
 BOOL GetServiceTag(DWORD processId, DWORD threadId, PULONG pServiceTag)
 {
-	typedef long NTSTATUS;
+    typedef long NTSTATUS;
     typedef struct _CLIENT_ID
     {
         DWORD       uniqueProcess;
@@ -79,7 +79,7 @@ BOOL GetServiceTag(DWORD processId, DWORD threadId, PULONG pServiceTag)
     } THREAD_INFORMATION_CLASS;
     typedef NTSTATUS (WINAPI* FN_NtQueryInformationThread)(HANDLE, THREAD_INFORMATION_CLASS, PVOID, ULONG, PULONG);
 
-	BOOL success = FALSE;
+    BOOL success = FALSE;
     NTSTATUS status = 0;
     FN_NtQueryInformationThread pfnNtQueryInformationThread = NULL;
     THREAD_BASIC_INFORMATION threadBasicInfo = {0};
